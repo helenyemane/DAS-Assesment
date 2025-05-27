@@ -125,7 +125,7 @@ SELECT * FROM market.employees_table ORDER BY HireDate ASC LIMIT 10;
 -- 23
 SELECT * FROM market.employees_table e
 WHERE NOT EXISTS (
-	SELECT 1 FROM market.sales s WHERE s.EmployeeID = e.EmployeeID
+	SELECT 1 FROM market.sales_table s WHERE s.EmployeeID = e.EmployeeID
 );
 -- 24
 SELECT e.EmployeeID, e.FirstName, e.LastName, COUNT(s.SaleID) AS TotalSales
@@ -142,14 +142,15 @@ LIMIT 1;
 -- 26
 SELECT e.Department, AVG(s.Quantity) AS AvgQuantitySold
 FROM market.employees_table e
-JOIN market.sales s ON e.EmployeeID = s.EmployeeID
+JOIN market.sales_table s ON e.EmployeeID = s.EmployeeID
 GROUP BY e.Department;
 -- 27
-SELECT e.EmployeeID, e.FirstName, e.LastName, SUM(s.Total) AS total_sales_2021
-FROM market.employees_table e
-JOIN market.sales s ON e.EmployeeID = s.EmployeeID
-WHERE EXTRACT(YEAR FROM s.SaleDate) = 2021
-GROUP BY e.EmployeeID, e.FirstName, e.LastName;
+SELECT employees.EmployeeID, employees.FirstName, employees.LastName, SUM(sales.total) AS total_sales_2021
+from market.employees_table employees
+JOIN  market.sales_table sales
+ON employees.EmployeeID = sales.EmployeeID
+WHERE EXTRACT(YEAR FROM sales.SaleDate) = 2021
+GROUP BY employees.EmployeeID,employees.FirstName, employees.LastName;
 -- 28
 SELECT e.EmployeeID, e.FirstName, e.LastName, SUM(s.Quantity) AS TotalQuantity
 FROM market.employees_table e
